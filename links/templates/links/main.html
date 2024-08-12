@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% comment %} {% load crispy_forms_tags  %} {% endcomment %}
+{% load colorize %}
+{% block content %}
+
+
+
+  <div class="container">
+
+  <div class="modal fade" id="AddItemModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Enter Url</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" autocomplete="off">
+            {% csrf_token %}
+            {{form}}
+            <button type="Submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#AddItemModal">Add</button>
+            <a href="{%url 'update-prices'%}">
+             <button class="btn btn-info">Update</button>
+            </a>
+
+            <a href="{%url 'export-data'%}" class="ml-4">
+              <button type="button" class="btn btn-outline-success">Export</button>
+             </a> 
+        </div>
+        <div class="col" style="text-align:right">
+            <div>Total no. of items being tracked:{{items_no}}</div>
+            <div>Discounted items:{{no_discounted}}</div>
+        </div>
+    </div>
+    {% if qs %}
+        {% for item in qs %}
+        <div class="card mt-3" >
+            <div class="card-header">
+                <h5>{{item.name}}</h5>
+                <a href="{% url 'delete' item.pk%}"><button class="btn btn-danger">delete</button></a>
+            </div>
+            <div class="card-body">
+             <div class="blockquote">
+                <div>Current Price (Rs.): {{item.current_price}}</div>
+                <div>Old Price (Rs.): {{item.old_price}}</div>
+                <div>Difference (Rs.): {{item.price_difference|colorize}}</div>
+                <div>Link: <a href="{{item.url}}">{{item.url}}</a></div>
+             </div>
+            </div>
+          </div>
+        {% endfor %}
+    {% else %}
+        <h3>No items here</h3>
+    {% endif %}
+
+</div>
+{% endblock content %}
